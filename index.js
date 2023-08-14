@@ -78,3 +78,15 @@ app.get("/", (req, res) => {
   console.log("hello");
   res.send("Hello World!");
 });
+
+app.get("/user/:userid", (req, res) => {
+  const userid = req.params.userid;
+  User.find({ _id: { $ne: userid } })
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => {
+      console.log("eror in finding users", err);
+      res.status(400).json({ message: err });
+    });
+});
