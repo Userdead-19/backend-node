@@ -30,10 +30,10 @@ app.listen(port, () => console.log(`Server is running on port ${port}`));
 const User = require("./models/UserModel");
 const Message = require("./models/MessageModel");
 
-const createToken = (userid) => {
-  const payload = { userid: userid };
+const createToken = (userId) => {
+  const payload = { userId: userId };
 
-  const token = jwt.sign(payload, "#0sdfj58%s5", { expiresIn: "1h" });
+  const token = jwt.sign(payload, "Q$r2k", { expiresIn: "1h" });
 
   return token;
 };
