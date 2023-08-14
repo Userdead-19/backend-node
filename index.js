@@ -33,7 +33,11 @@ const Message = require("./models/MessageModel");
 const createToken = (userId) => {
   const payload = { userId: userId };
 
-  const token = jwt.sign(payload, "Q$r2k", { expiresIn: "1h" });
+  const token = jwt.sign(
+    payload,
+    "3838a8cb5de65673f0cccedb26cc662ba76915aad66715138c7b6487fdbd55c2",
+    { expiresIn: "1h" }
+  );
 
   return token;
 };
