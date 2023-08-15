@@ -87,7 +87,7 @@ app.get("/users/:user", async (req, res) => {
     // Query all users except the specified user
     const users = await User.find({ username: { $ne: excludedUser } });
 
-    res.statusCode().json(users);
+    res.status(200).json(users);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
