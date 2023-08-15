@@ -70,7 +70,7 @@ app.post("/login", (req, res) => {
     })
     .catch((err) => {
       console.log("error in finding the user", err);
-      ("");
+      
       res.status(400).json({ message: err });
     });
 });
