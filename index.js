@@ -150,7 +150,7 @@ app.post("/friend-request/accept", async (req, res) => {
     );
 
     sender.sentFriendRequests = sender.sentFriendRequests.filter(
-      (request) => request.toString() !== recepientId.toString
+      (request) => request.toString() !== recepientId.toString()
     );
 
     await sender.save();
