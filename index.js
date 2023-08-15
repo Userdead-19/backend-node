@@ -80,12 +80,12 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/users/:user", async (req, res) => {
+app.post("/users", async (req, res) => {
   try {
-    const excludedUser = req.params.user;
+    const { userId } = req.body;
 
     // Query all users except the specified user
-    const users = await User.find({ username: { $ne: excludedUser } });
+    const users = await User.find({ username: { $ne: userId } });
 
     res.status(200).json(users);
   } catch (error) {
