@@ -93,3 +93,23 @@ app.post("/users", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+app.post("/friend-request", async (req, res) => {
+  const { currentUserId, selectedUserId } = req.body;
+
+  try {
+    //update the recepient's friendRequestsArray!
+    await User.findByIdAndUpdate(selectedUserId, {
+      $push: { freindRequests: currentUserId },
+    });
+
+    //update the sender's sentFriendRequests array
+    await User.findByIdAndUpdate(currentUserId, {
+      $push: { sentFriendRequests: selectedUserId },
+    });
+
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+});
