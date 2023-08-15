@@ -85,7 +85,7 @@ app.post("/users", async (req, res) => {
     const { userId } = req.body;
 
     // Query all users except the specified user
-    const users = await User.find({ username: { $ne: userId } });
+    const users = await User.find({ _id: { $ne: userId } });
 
     res.status(200).json(users);
   } catch (error) {
