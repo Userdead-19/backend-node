@@ -187,3 +187,29 @@ app.get("/jwt", (req, res) => {
     res.status(400).json({ message: "Token is invalid" });
   }
 });
+
+app.post("/renew-token", (req, res) => {
+  const refreshToken = req.body.refreshToken;
+  const expiresIn = 60 * 60 * 24 * 3;
+
+  try {
+    const decodedToken = jwt.verify(refreshToken, "Q$r2K6W8n!jCW%Zk");
+    const userId = decodedToken.userId;
+
+    // Assume you have a getUserById function to retrieve user details
+    const user = getUserById(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Generate a new access token
+    const newAccessToken = jwt.sign({ userId: user.id }, "Q$r2K6W8n!jCW%Zk", {
+      expiresIn,
+    });
+
+    res.json({ accessToken: newAccessToken });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid refresh token" });
+  }
+});
