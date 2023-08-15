@@ -193,7 +193,7 @@ app.post("/renew-token", (req, res) => {
   const expiresIn = 60 * 60 * 24 * 3;
 
   try {
-    const decodedToken = jwt.verify(refreshToken, "Q$r2K6W8n!jCW%Zk");
+    const decodedToken = jwt.verify(refreshToken, "#0sdfj58%s5");
     const userId = decodedToken.userId;
 
     // Assume you have a getUserById function to retrieve user details
