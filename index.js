@@ -34,11 +34,7 @@ const Message = require("./models/MessageModel");
 const createToken = (userId) => {
   const payload = { userId: userId };
 
-  const token = jwt.sign(
-    payload,
-    "Q$r2K6W8n!jCW%Zk",
-    { expiresIn: "1h" }
-  );
+  const token = jwt.sign(payload, "Q$r2K6W8n!jCW%Zk", { expiresIn: "1h" });
 
   return token;
 };
@@ -84,14 +80,16 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/user/:userid", (req, res) => {
-  const userid = req.params.userid;
-  User.find({ _id: { $ne: userid } })
-    .then((users) => {
-      res.status(200).json(users);
-    })
-    .catch((err) => {
-      console.log("eror in finding users", err);
-      res.status(400).json({ message: err });
-    });
+app.get("/users/:user", async (req, res) => {
+  try {
+    const excludedUser = req.params.user;
+
+    // Query all users except the specified user
+    const users = await User.find({ username: { $ne: excludedUser } });
+
+    res.statusCode(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
 });
