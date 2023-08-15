@@ -35,7 +35,7 @@ const createToken = (userId) => {
 
   const token = jwt.sign(
     payload,
-    "3838a8cb5de65673f0cccedb26cc662ba76915aad66715138c7b6487fdbd55c2",
+    "Q$r2K6W8n!jCW%Zk",
     { expiresIn: "1h" }
   );
 
