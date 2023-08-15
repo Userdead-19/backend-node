@@ -100,7 +100,7 @@ app.post("/friend-request", async (req, res) => {
   try {
     //update the recepient's friendRequestsArray!
     await User.findByIdAndUpdate(selectedUserId, {
-      $push: { freindRequests: currentUserId },
+      $push: { friendRequests: currentUserId },
     });
 
     //update the sender's sentFriendRequests array
