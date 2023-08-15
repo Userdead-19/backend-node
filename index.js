@@ -121,12 +121,12 @@ app.get("/friend-request/:userId", async (req, res) => {
 
     //fetch the user document based on the User id
     const user = await User.findById(userId)
-      .populate("freindRequests", "name email image")
+      .populate("friendRequests", "name email image")
       .lean();
 
-    const freindRequests = user.freindRequests;
+    const friendRequests = user.friendRequests;
 
-    res.json(freindRequests);
+    res.json(friendRequests);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -145,7 +145,7 @@ app.post("/friend-request/accept", async (req, res) => {
     sender.friends.push(recepientId);
     recepient.friends.push(senderId);
 
-    recepient.freindRequests = recepient.freindRequests.filter(
+    recepient.friendRequests = recepient.friendRequests.filter(
       (request) => request.toString() !== senderId.toString()
     );
 
