@@ -175,3 +175,15 @@ app.get("/accepted-friends/:userId", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+app.get("/jwt", (req, res) => {
+  const { token } = req.body;
+  const secretKey = "Q$r2K6W8n!jCW%Zk";
+  try {
+    const decodedToken = jwt.verify(token, secretKey);
+
+    res.status(200).json({ message: "Token is valid" });
+  } catch (error) {
+    res.status(400).json({ message: "Token is invalid" });
+  }
+});
