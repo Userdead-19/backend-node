@@ -113,3 +113,22 @@ app.post("/friend-request", async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+
+app.get("/friend-request/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    //fetch the user document based on the User id
+    const user = await User.findById(userId)
+      .populate("freindRequests", "name email image")
+      .lean();
+
+    const freindRequests = user.freindRequests;
+
+    res.json(freindRequests);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
