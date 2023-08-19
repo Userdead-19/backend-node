@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const MessageSchema = new mongoose.Schema({
-  senderid: {
+const messageSchema = new mongoose.Schema({
+  senderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
@@ -14,13 +14,13 @@ const MessageSchema = new mongoose.Schema({
     enum: ["text", "image"],
   },
   message: String,
-  imageURl: String,
+  imageUrl: String,
   timeStamp: {
     type: Date,
     default: Date.now,
   },
 });
 
-const Message = mongoose.model("Message", MessageSchema);
+const Message = mongoose.model('Message', messageSchema);
 
 module.exports = Message;
