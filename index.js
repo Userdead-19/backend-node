@@ -176,40 +176,128 @@ app.get("/accepted-friends/:userId", async (req, res) => {
   }
 });
 
-app.get("/jwt", (req, res) => {
-  const { token } = req.body;
-  const secretKey = "Q$r2K6W8n!jCW%Zk";
-  try {
-    const decodedToken = jwt.verify(token, secretKey);
+const multer = require("multer");
 
-    res.status(200).json({ message: "Token is valid" });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "files/"); // Specify the desired destination folder
+  },
+  filename: function (req, file, cb) {
+    // Generate a unique filename for the uploaded file
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+//endpoint to post Messages and store it in the backend
+app.post("/messages", upload.single("imageFile"), async (req, res) => {
+  try {
+    const { senderId, recepientId, messageType, messageText } = req.body;
+
+    const newMessage = new Message({
+      senderId,
+      recepientId,
+      messageType,
+      message: messageText,
+      timestamp: new Date(),
+      imageUrl: messageType === "image" ? req.file.path : null,
+    });
+
+    await newMessage.save();
+    res.status(200).json({ message: "Message sent Successfully" });
   } catch (error) {
-    res.status(400).json({ message: "Token is invalid" });
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-app.post("/renew-token", (req, res) => {
-  const refreshToken = req.body.refreshToken;
-  const expiresIn = 60 * 60 * 24 * 3;
-
+///endpoint to get the userDetails to design the chat Room header
+app.get("/user/:userId", async (req, res) => {
   try {
-    const decodedToken = jwt.verify(refreshToken, "Q$r2K6W8n!jCW%Zk");
-    const userId = decodedToken.userId;
+    const { userId } = req.params;
 
-    // Assume you have a getUserById function to retrieve user details
-    const user = getUserById(userId);
+    //fetch the user data from the user ID
+    const recepientId = await User.findById(userId);
 
-    if (!user) {
-      throw new Error("User not found");
+    res.json(recepientId);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//endpoint to fetch the messages between two users in the chatRoom
+app.get("/messages/:senderId/:recepientId", async (req, res) => {
+  try {
+    const { senderId, recepientId } = req.params;
+
+    const messages = await Message.find({
+      $or: [
+        { senderId: senderId, recepientId: recepientId },
+        { senderId: recepientId, recepientId: senderId },
+      ],
+    }).populate("senderId", "_id name");
+
+    res.json(messages);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//endpoint to delete the messages!
+app.post("/deleteMessages", async (req, res) => {
+  try {
+    const { messages } = req.body;
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ message: "invalid req body!" });
     }
 
-    // Generate a new access token
-    const newAccessToken = jwt.sign({ userId: user.id }, "Q$r2K6W8n!jCW%Zk", {
-      expiresIn,
-    });
+    await Message.deleteMany({ _id: { $in: messages } });
 
-    res.json({ accessToken: newAccessToken });
+    res.json({ message: "Message deleted successfully" });
   } catch (error) {
-    res.status(401).json({ message: "Invalid refresh token" });
+    console.log(error);
+    res.status(500).json({ error: "Internal Server" });
+  }
+});
+
+app.get("/friend-requests/sent/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId)
+      .populate("sentFriendRequests", "name email image")
+      .lean();
+
+    const sentFriendRequests = user.sentFriendRequests;
+
+    res.json(sentFriendRequests);
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ error: "Internal Server" });
+  }
+});
+
+app.get("/friends/:userId", (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    User.findById(userId)
+      .populate("friends")
+      .then((user) => {
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        const friendIds = user.friends.map((friend) => friend._id);
+
+        res.status(200).json(friendIds);
+      });
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ message: "internal server error" });
   }
 });
