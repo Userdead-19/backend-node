@@ -154,7 +154,7 @@ app.get("/friend-request/:userId", async (req, res) => {
 
     //fetch the user document based on the User id
     const user = await User.findById(userId)
-      .populate("friendRequests", "name email image")
+      .populate("friendRequests", "name email image designation")
       .lean();
 
     const friendRequests = user.friendRequests;
