@@ -56,7 +56,7 @@ const UserSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    required: false,
+    required: true,
   },
   friendRequests: [
     {
