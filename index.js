@@ -75,6 +75,7 @@ app.post("/register", (req, res) => {
     desigination,
     about,
   });
+  console.log(newUser);
   newUser
     .save()
     .then((user) => res.status(200).json({ message: user }))
