@@ -41,9 +41,39 @@ const createToken = (userId) => {
 };
 
 app.post("/register", (req, res) => {
-  const { name, email, password, image } = req.body;
+  const {
+    name,
+    email,
+    password,
+    image,
+    gender,
+    dob,
+    yearofgraduate,
+    branch,
+    college,
+    fieldofintrest,
+    skills,
+    placeofwork,
+    desigination,
+    about,
+  } = req.body;
 
-  const newUser = new User({ name, email, password, image });
+  const newUser = new User({
+    name,
+    email,
+    password,
+    image,
+    gender,
+    dob,
+    yearofgraduate,
+    branch,
+    college,
+    fieldofintrest,
+    skills,
+    placeofwork,
+    desigination,
+    about,
+  });
   newUser
     .save()
     .then((user) => res.status(200).json({ message: user }))
