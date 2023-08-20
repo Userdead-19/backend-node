@@ -52,10 +52,10 @@ app.post("/register", (req, res) => {
     yearofgraduate,
     branch,
     college,
-    fieldofintrest,
+    fieldofinterest,
     skills,
     placeofwork,
-    desigination,
+    designation,
     about,
   } = req.body;
 
@@ -69,10 +69,10 @@ app.post("/register", (req, res) => {
     yearofgraduate,
     branch,
     college,
-    fieldofintrest,
+    fieldofinterest,
     skills,
     placeofwork,
-    desigination,
+    designation,
     about,
   });
   console.log(newUser);
