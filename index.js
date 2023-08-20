@@ -78,10 +78,12 @@ app.post("/register", (req, res) => {
   console.log(newUser);
   newUser
     .save()
-    .then((user) => res.status(200).json({ message: user }))
+    .then((user) => {
+      res.status(200).json({ message: "User registered successfully" });
+    })
     .catch((err) => {
-      console.log("error in register");
-      res.status(400).json({ message: err });
+      console.log("error in saving the user", err);
+      res.status(500).json({ message: err });
     });
 });
 
