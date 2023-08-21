@@ -372,7 +372,7 @@ app.post("/comments", async (req, res) => {
   await Posts.findByIdAndUpdate(
     _id,
     {
-      $push: { comments: { comment, userID } },
+      $push: { comments: `${comment}/${userID} ` },
     },
     { new: true }
   )
