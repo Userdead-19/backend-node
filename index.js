@@ -31,6 +31,7 @@ app.listen(port, () => console.log(`Server is running on port ${port}`));
 const User = require("./models/UserModel");
 const Message = require("./models/MessageModel");
 const Posts = require("./models/PostModel");
+const Comment = require("./models/CommentModel");
 
 const createToken = (userId) => {
   const expiresIn = 60 * 60 * 24 * 3;
@@ -365,22 +366,56 @@ app.get("/posts", async (req, res) => {
     });
 });
 
-app.post("/comments", async (req, res) => {
-  console.log(req.body);
-  const { text, userID, _id } = req.body;
+app.post("/posts/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
+  const { text, userID } = req.body; // Assuming you're sending text and userID in the request body
 
-  await Posts.findByIdAndUpdate(
-    _id,
-    {
-      $push: { comments: `${text}/${userID} ` },
-    },
-    { new: true }
-  )
-    .then((post) => {
-      res.status(200).json({ message: "Comment created successfully" });
-    })
-    .catch((err) => {
-      console.log("error in saving the post", err);
-      res.status(500).json({ message: err });
+  try {
+    // Check if the post with the given postId exists
+    const existingPost = await Posts.findById(postId);
+    if (!existingPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Create a new comment
+    const newComment = new Comment({
+      text,
+      userID,
+      postID: existingPost._id, // Reference to the post
     });
+
+    // Save the new comment
+    await newComment.save();
+
+    // Add the new comment's ObjectId to the comments array of the existing post
+    existingPost.comments.push(newComment._id);
+
+    // Save the updated post
+    await existingPost.save();
+
+    return res.status(201).json({ message: "Comment added successfully" });
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.get("/posts/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    // Find the post with the specified postId
+    const post = await Posts``.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Populate the comments array with actual comment data
+    await post.populate("comments").execPopulate();
+
+    return res.status(200).json({ comments: post.comments });
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
 });
