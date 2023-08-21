@@ -369,11 +369,15 @@ app.post("/comments", async (req, res) => {
   console.log(req.body);
   const { comment, userID, _id } = req.body;
 
-  Posts.findByIdAndUpdate(_id, {
-    $push: { comments: { comment, userID } },
-  })
+  await Posts.findByIdAndUpdate(
+    _id,
+    {
+      $push: { comments: { comment, userID } },
+    },
+    { new: true }
+  )
     .then((post) => {
-      res.status(200).json({ message: "Comment added successfully" });
+      res.status(200).json({ message: "Comment created successfully" });
     })
     .catch((err) => {
       console.log("error in saving the post", err);
