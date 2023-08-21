@@ -405,7 +405,7 @@ app.get("/posts/:postId/comments", async (req, res) => {
 
   try {
     // Find the post with the specified postId
-    const post = await Posts``.findById(postId);
+    const post = await Posts.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
