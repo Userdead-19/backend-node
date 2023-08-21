@@ -30,6 +30,7 @@ app.listen(port, () => console.log(`Server is running on port ${port}`));
 
 const User = require("./models/UserModel");
 const Message = require("./models/MessageModel");
+const Posts = require("./models/PostModel");
 
 const createToken = (userId) => {
   const expiresIn = 60 * 60 * 24 * 3;
@@ -334,4 +335,32 @@ app.get("/friends/:userId", (req, res) => {
     console.log("error", error);
     res.status(500).json({ message: "internal server error" });
   }
+});
+
+app.post("/posts", async (req, res) => {
+  const { title, content, userID } = req.body;
+  const newPost = new Posts({
+    title,
+    content,
+    userID,
+  })
+    .save()
+    .then((post) => {
+      res.status(200).json({ message: "Post created successfully" });
+    })
+    .catch((err) => {
+      console.log("error in saving the post", err);
+      res.status(500).json({ message: err });
+    });
+});
+
+app.get("/posts", async (req, res) => {
+  await Posts.find()
+    .then((posts) => {
+      res.status(200).json(posts);
+    })
+    .catch((err) => {
+      console.log("error in saving the post", err);
+      res.status(500).json({ message: err });
+    });
 });
