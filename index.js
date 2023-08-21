@@ -364,3 +364,19 @@ app.get("/posts", async (req, res) => {
       res.status(500).json({ message: err });
     });
 });
+
+app.post("/comments", async (req, res) => {
+  const { comment, userID, postID } = req.body;
+  const post = new Posts.findById(postID);
+
+  post.comments.push([comment, userID]);
+  post
+    .save()
+    .then((post) => {
+      res.status(200).json({ message: "Comment created successfully" });
+    })
+    .catch((err) => {
+      console.log("error in saving the post", err);
+      res.status(500).json({ message: err });
+    });
+});
