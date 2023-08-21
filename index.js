@@ -367,12 +367,12 @@ app.get("/posts", async (req, res) => {
 
 app.post("/comments", async (req, res) => {
   console.log(req.body);
-  const { comment, userID, _id } = req.body;
+  const { text, userID, _id } = req.body;
 
   await Posts.findByIdAndUpdate(
     _id,
     {
-      $push: { comments: `${comment}/${userID} ` },
+      $push: { comments: `${text}/${userID} ` },
     },
     { new: true }
   )
