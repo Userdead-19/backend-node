@@ -371,7 +371,7 @@ app.post("/comments", async (req, res) => {
   Posts.findByIdAndUpdate(postID, {
     $push: { comments: { comment, userID } },
   })
-    .then((res) => {
+    .then((response) => {
       res.status(200).json({ message: "Comment created successfully" });
     })
     .catch((err) => {
