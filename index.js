@@ -31,8 +31,7 @@ app.listen(port, () => console.log(`Server is running on port ${port}`));
 const User = require("./models/UserModel");
 const Message = require("./models/MessageModel");
 const Posts = require("./models/PostModel");
-const Comment = require("./models/CommentModel");
-
+const Blogs = require("./models/BlogModel");
 const createToken = (userId) => {
   const expiresIn = 60 * 60 * 24 * 3;
   const payload = { userId: userId };
@@ -378,6 +377,34 @@ app.post("/comments", async (req, res) => {
     })
     .catch((err) => {
       console.log("error in saving the comment", err);
+      res.status(500).json({ message: err });
+    });
+});
+
+app.get("/blogs", async (req, res) => {
+  await Blogs.find()
+    .then((blogs) => {
+      res.status(200).json(blogs);
+    })
+    .catch((err) => {
+      console.log("error in saving the post", err);
+      res.status(500).json({ message: err });
+    });
+});
+
+app.post("/blogs", async (req, res) => {
+  const { title, content, userID } = req.body;
+  const newBlog = new Blogs({
+    title,
+    content,
+    userID,
+  })
+    .save()
+    .then((post) => {
+      res.status(200).json({ message: "Blog created successfully" });
+    })
+    .catch((err) => {
+      console.log("error in saving the post", err);
       res.status(500).json({ message: err });
     });
 });
