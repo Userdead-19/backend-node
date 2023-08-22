@@ -408,3 +408,15 @@ app.post("/blogs", async (req, res) => {
       res.status(500).json({ message: err });
     });
 });
+
+app.get("/blogs/:id", async (req, res) => {
+  const { id } = req.params;
+  await Blogs.findById(id)
+    .then((blogs) => {
+      res.status(200).json(blogs);
+    })
+    .catch((err) => {
+      console.log("error in saving the post", err);
+      res.status(500).json({ message: err });
+    });
+});

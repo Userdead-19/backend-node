@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const blogSchema = new mongoose.Schema({
+  userID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // Reference to the User model
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -9,21 +14,18 @@ const blogSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // Reference to the User model
+  designation: {
+    type: String,
+    required: true,
+  },
+  company: {
+    type: String,
     required: true,
   },
   likes: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Reference to the User model
-    },
-  ],
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment", // Reference to the Comment model
     },
   ],
   date: {
