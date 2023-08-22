@@ -368,7 +368,8 @@ app.get("/posts", async (req, res) => {
 
 app.post("/comments", async (req, res) => {
   console.log(req.body);
-  const { comment, userID, postID } = req.body;
+  const { text, userID, postID } = req.body;
+  const comment = text;
   Posts.findByIdAndUpdate(postID, {
     $push: { comments: { comment, userID } },
   })
