@@ -394,7 +394,7 @@ app.get("/blogs", async (req, res) => {
 
 app.post("/blogs", async (req, res) => {
   const { title, content, userID, designation, company } = req.body;
-  const user = User.findById(userID);
+  const user = await User.findById(userID);
   const newBlog = new Blogs({
     title,
     content,
