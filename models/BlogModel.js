@@ -1,11 +1,23 @@
 const mongoose = require("mongoose");
 
 const blogSchema = new mongoose.Schema({
-  userID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // Reference to the User model
-    required: true,
-  },
+  userID: [
+    {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // Reference to the User model
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      image: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
   title: {
     type: String,
     required: true,

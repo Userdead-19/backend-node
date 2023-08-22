@@ -394,15 +394,16 @@ app.get("/blogs", async (req, res) => {
 
 app.post("/blogs", async (req, res) => {
   const { title, content, userID, designation, company } = req.body;
+  const user = User.findById(userID);
   const newBlog = new Blogs({
     title,
     content,
-    userID,
+    userID: { _id: userID, name: user.name, image: user.image },
     designation,
     company,
   })
     .save()
-    .then((post) => {
+    .then((blog) => {
       res.status(200).json({ message: "Blog created successfully" });
     })
     .catch((err) => {
