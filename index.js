@@ -393,11 +393,13 @@ app.get("/blogs", async (req, res) => {
 });
 
 app.post("/blogs", async (req, res) => {
-  const { title, content, userID } = req.body;
+  const { title, content, userID, designation, company } = req.body;
   const newBlog = new Blogs({
     title,
     content,
     userID,
+    designation,
+    company,
   })
     .save()
     .then((post) => {
