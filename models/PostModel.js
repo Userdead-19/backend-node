@@ -19,12 +19,16 @@ const Post = new mongoose.Schema(
         ref: "User",
       },
     ],
-    comments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
+    comments: {
+      comment: {
+        type: String,
         ref: "Comment",
       },
-    ],
+      userID: {
+        type: String,
+        ref: "User",
+      },
+    },
     date: {
       type: Date,
       default: Date.now,
