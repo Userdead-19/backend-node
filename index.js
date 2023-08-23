@@ -32,6 +32,8 @@ const User = require("./models/UserModel");
 const Message = require("./models/MessageModel");
 const Posts = require("./models/PostModel");
 const Blogs = require("./models/BlogModel");
+const Review = require("./models/ReviewModel");
+
 const createToken = (userId) => {
   const expiresIn = 60 * 60 * 24 * 3;
   const payload = { userId: userId };
@@ -221,6 +223,7 @@ app.get("/accepted-friends/:userId", async (req, res) => {
 });
 
 const multer = require("multer");
+const Blog = require("./models/BlogModel");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -449,4 +452,56 @@ app.get("/search", async (req, res) => {
     console.error("Error searching for users:", error);
     res.status(500).json({ error: "Error searching for users" });
   }
+});
+
+app.post("/blogs/like", async (req, res) => {
+  const { blogId, count, userId } = req.body;
+  const user = await User.findById(userId);
+
+  try {
+    await Blog.findByIdAndUpdate(blogId, {
+      $push: {
+        likes: { count: count, likedBy: { _id: userId, name: user.name } },
+      },
+    })
+      .then((response) => {
+        res.status(200).json({ message: "Blog liked successfully" });
+      })
+      .catch((err) => {
+        console.log("error in saving the post", err);
+        res.status(500).json({ message: err });
+      });
+  } catch (error) {
+    console.error("Error searching for users:", error);
+    res.status(500).json({ error: "Error searching for users" });
+  }
+});
+
+app.post("/addReview", async (req, res) => {
+  const { designation, placeofwork, review, rating } = req.body;
+  const newReview = new Review({
+    designation,
+    placeofwork,
+    review,
+    rating,
+  })
+    .save()
+    .then((review) => {
+      res.status(200).json({ message: "Review created successfully" });
+    })
+    .catch((err) => {
+      console.log("error in saving the review", err);
+      res.status(500).json({ message: err });
+    });
+});
+
+app.get("/reviews", async (req, res) => {
+  await Review.find()
+    .then((reviews) => {
+      res.status(200).json(reviews);
+    })
+    .catch((err) => {
+      console.log("error in saving the post", err);
+      res.status(500).json({ message: err });
+    });
 });
