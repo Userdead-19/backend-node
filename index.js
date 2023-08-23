@@ -133,7 +133,7 @@ app.post("/friend-request", async (req, res) => {
   const { currentUserId, selectedUserId } = req.body;
   if (currentUserId === selectedUserId) {
     return res
-      .status(400)
+      .status(403)
       .json({ message: "You cannot send friend request to yourself" });
   }
 
