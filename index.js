@@ -423,3 +423,21 @@ app.get("/blogs/:id", async (req, res) => {
       res.status(500).json({ message: err });
     });
 });
+
+app.get("/search", async (req, res) => {
+  const searchText = req.query.q;
+
+  try {
+    const users = await User.find({
+      $or: [
+        { name: { $regex: searchText, $options: "i" } }, // Case-insensitive name search
+        { email: { $regex: searchText, $options: "i" } }, // Case-insensitive email search
+      ],
+    });
+
+    res.json(users);
+  } catch (error) {
+    console.error("Error searching for users:", error);
+    res.status(500).json({ error: "Error searching for users" });
+  }
+});
