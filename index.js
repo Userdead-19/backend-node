@@ -131,6 +131,15 @@ app.post("/users", async (req, res) => {
 
 app.post("/friend-request", async (req, res) => {
   const { currentUserId, selectedUserId } = req.body;
+  if (currentUserId === selectedUserId) {
+    return res
+      .status(400)
+      .json({ message: "You cannot send friend request to yourself" });
+  }
+
+  if (!currentUserId || !selectedUserId) {
+    return res.status(400).json({ message: "Invalid request body" });
+  }
 
   try {
     //update the recepient's friendRequestsArray!
