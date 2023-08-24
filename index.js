@@ -506,14 +506,22 @@ app.get("/reviews", async (req, res) => {
     });
 });
 
-app.get("/userUpdate/:id", async (req, res) => {
+app.put("/userUpdate/:id", async (req, res) => {
   const { id } = req.params;
-  User.findByIdAndUpdate(id, req.body)
-    .then((response) => {
-      res.status(200).json({ message: "User updated successfully" });
+  const updateData = req.body; // Make sure the request body contains the fields you want to update
+
+  User.findByIdAndUpdate(id, updateData, { new: true })
+    .then((updatedUser) => {
+      if (updatedUser) {
+        res
+          .status(200)
+          .json({ message: "User updated successfully", user: updatedUser });
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
     })
     .catch((err) => {
-      console.log("error in saving the user", err);
-      res.status(500).json({ message: err });
+      console.log("Error updating the user:", err);
+      res.status(500).json({ message: "Internal server error" });
     });
 });
