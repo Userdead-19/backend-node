@@ -505,3 +505,15 @@ app.get("/reviews", async (req, res) => {
       res.status(500).json({ message: err });
     });
 });
+
+app.get("/userUpdate/:id", async (req, res) => {
+  const { id } = req.params;
+  User.findByIdAndUpdate(id, req.body)
+    .then((response) => {
+      res.status(200).json({ message: "User updated successfully" });
+    })
+    .catch((err) => {
+      console.log("error in saving the user", err);
+      res.status(500).json({ message: err });
+    });
+});
